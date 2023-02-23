@@ -1,0 +1,21 @@
+{
+  "name": "sheet-engine",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SIT-Mercy/sheet-engine.git"
+  },
+  "author": "SIT-Mercy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SIT-Mercy/sheet-engine/issues"
+  },
+  "homepage": "https://github.com/SIT-Mercy/sheet-engine#readme",
+  "dependencies": {
+    "typescript": "^4.9.5",
+    "xlsx": "^0.18.5"
+  }
+}
