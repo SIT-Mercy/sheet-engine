@@ -5,8 +5,8 @@ class XlsxSheetImpl {
         this.grid = grid;
         this.start = start;
         this.end = end;
-        this.columnLength = grid.length;
-        this.rowLength = grid.length > 0 ? grid[0].length : 0;
+        this.rowLength = grid.length;
+        this.columnLength = grid.length > 0 ? grid[0].length : 0;
     }
     at(row, column) {
         if (typeof column === "string") {
@@ -35,7 +35,7 @@ export function parseXlsxDocument(source) {
     }
     for (let i = 0; i < rawMeta.length; i++) {
         const meta = rawMeta[i];
-        const doc = rawDocument[i];
+        const doc = rawDocument[i].data;
         const rangeInfo = meta.data;
         const { start, end } = parseXlsxRangeInfo(rangeInfo);
         name2Sheet.set(meta.name, new XlsxSheetImpl(meta.name, doc, start, end));
