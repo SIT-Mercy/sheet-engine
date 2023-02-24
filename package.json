@@ -15,6 +15,7 @@
   },
   "homepage": "https://github.com/SIT-Mercy/sheet-engine#readme",
   "dependencies": {
+    "node-xlsx": "^0.21.0",
     "typescript": "^4.9.5",
     "xlsx": "^0.18.5"
   }
