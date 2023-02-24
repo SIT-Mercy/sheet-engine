@@ -2,8 +2,15 @@
   "name": "sheet-engine",
   "version": "1.0.0",
   "description": "",
-  "main": "sheet-engine.ts",
+  "main": "dist/index.js",
+  "typings": "src/index.ts",
+  "module": "src/index.ts",
   "type": "module",
+  "files": [
+    "src/**/*.ts",
+    "dist/**/*.js",
+    "dist/**/*.d.ts"
+  ],
   "scripts": {},
   "repository": {
     "type": "git",
