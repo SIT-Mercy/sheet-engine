@@ -102,7 +102,7 @@ export function parseXlsxDocument(source: any): XlsxDocument {
   }
   for (let i = 0; i < rawMeta.length; i++) {
     const meta = rawMeta[i]
-    const doc: unknown = rawDocument[i]
+    const doc = rawDocument[i].data
     const rangeInfo = meta.data
     const { start, end } = parseXlsxRangeInfo(rangeInfo)
     name2Sheet.set(meta.name, new XlsxSheetImpl(meta.name, doc as string[][], start, end))
