@@ -23,7 +23,7 @@ export interface XlsxSheet {
    * @param column the number or name of column, starts with 1 or "A"
    * @returns the content of cell
    */
-  at: (row: RowSymbol, column: ColumnSymbol) => string
+  at: (row: RowSymbol, column: ColumnSymbol) => string | undefined
   /**
    * 
    * @param row the number of row, starts with 1
@@ -52,7 +52,7 @@ class XlsxSheetImpl implements XlsxSheet {
     this.rowLength = grid.length
     this.columnLength = grid.length > 0 ? grid[0].length : 0
   }
-  at(row: RowSymbol, column: ColumnSymbol): string {
+  at(row: RowSymbol, column: ColumnSymbol): string | undefined {
     if (typeof column === "string") {
       column = parseColumnNameToIndex(column)
     }
@@ -90,7 +90,7 @@ export function parseXlsxDocument(source: any): Map<string, XlsxSheet> {
   if (rawMeta.length !== rawDocument.length) {
     throw new XlsxDocumentParseError(XlsxDocumentErrorType.metaNotMatch)
   }
-  
+
   for (let i = 0; i < rawMeta.length; i++) {
     const meta = rawMeta[i]
     const doc = rawDocument[i].data
