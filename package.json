@@ -2,6 +2,7 @@
   "name": "sheet-engine",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "scripts": {},
   "repository": {
     "type": "git",
