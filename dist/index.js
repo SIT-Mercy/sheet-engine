@@ -40,9 +40,7 @@ export function parseXlsxDocument(source) {
         const { start, end } = parseXlsxRangeInfo(rangeInfo);
         name2Sheet.set(meta.name, new XlsxSheetImpl(meta.name, doc, start, end));
     }
-    return {
-        name2Sheet
-    };
+    return name2Sheet;
 }
 function parseXlsxRangeInfo(rangeInfo) {
     return {
