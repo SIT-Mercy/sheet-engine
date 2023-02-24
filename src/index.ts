@@ -3,16 +3,6 @@ interface CellRange {
   row: number
   column: number
 }
-interface XlsxDocument {
-  name2Sheet: Map<string, XlsxSheet>
-}
-export interface XlsxDocumentLoaderPorvider {
-  name: string
-  create: (context: any) => XlsxDocumentLoader
-}
-export interface XlsxDocumentLoader {
-  load: (document: XlsxDocument) => Promise<void>
-}
 /**
  * Starts with 1
  */
@@ -93,13 +83,14 @@ export function parseColumnNameToIndex(column: string): number {
   return result - 1
 }
 
-export function parseXlsxDocument(source: any): XlsxDocument {
+export function parseXlsxDocument(source: any): Map<string, XlsxSheet> {
   const rawMeta = xlsx.parseMetadata(source)
   const rawDocument = xlsx.parse(source)
   const name2Sheet = new Map<string, XlsxSheet>()
   if (rawMeta.length !== rawDocument.length) {
     throw new XlsxDocumentParseError(XlsxDocumentErrorType.metaNotMatch)
   }
+  
   for (let i = 0; i < rawMeta.length; i++) {
     const meta = rawMeta[i]
     const doc = rawDocument[i].data
@@ -108,10 +99,9 @@ export function parseXlsxDocument(source: any): XlsxDocument {
     name2Sheet.set(meta.name, new XlsxSheetImpl(meta.name, doc as string[][], start, end))
   }
 
-  return {
-    name2Sheet
-  }
+  return name2Sheet
 }
+
 function parseXlsxRangeInfo(rangeInfo: any): {
   start: CellRange | null,
   end: CellRange | null
