@@ -2,7 +2,7 @@
   "name": "sheet-engine",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.ts",
+  "main": "sheet-engine.ts",
   "type": "module",
   "scripts": {},
   "repository": {
