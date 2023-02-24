@@ -5,7 +5,6 @@
     "removeComments": true,
     "sourceMap": true,
     "target": "ES2017",
-    "outDir": "dist",
     "skipLibCheck": true,
     "allowJs": true,
     "module": "ES2022",
