@@ -59,8 +59,8 @@ class XlsxSheetImpl implements XlsxSheet {
     this.grid = grid
     this.start = start
     this.end = end
-    this.columnLength = grid.length
-    this.rowLength = grid.length > 0 ? grid[0].length : 0
+    this.rowLength = grid.length
+    this.columnLength = grid.length > 0 ? grid[0].length : 0
   }
   at(row: RowSymbol, column: ColumnSymbol): string {
     if (typeof column === "string") {
