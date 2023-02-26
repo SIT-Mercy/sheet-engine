@@ -45,24 +45,41 @@ export class XlsxDocumentParseError extends Error {
         this.name = "XlsxDocumentParseError";
     }
 }
-export async function loadSheetLoadersInDir(folder) {
+export async function loadSheetProvider(path) {
+    const module = await import(path);
+    const provider = module.default;
+    if (provider.name && provider.type && provider.create) {
+        return provider;
+    }
+    return null;
+}
+export async function loadSheetProviderInDir(folder, onError = null) {
     const readdir = promisify(fs.readdir);
     const files = await readdir(folder, { withFileTypes: true });
     const providers = [];
     for (const file of files) {
         const fileName = file.name;
         if (path.extname(fileName) === ".js") {
-            const fullPath = path.join(folder, fileName);
+            const fullPath = fileUrl(path.join(folder, fileName));
+            console.log(fullPath);
             try {
-                const provider = await import(fullPath);
-                if (provider.name && provider.type && provider.create) {
+                const provider = await loadSheetProvider(fullPath);
+                if (provider) {
                     providers.push(provider);
                 }
             }
             catch (e) {
+                onError === null || onError === void 0 ? void 0 : onError(e);
             }
         }
     }
     return providers;
+}
+function fileUrl(filePath) {
+    let pathName = path.resolve(filePath).replace(/\\/g, "/");
+    if (pathName[0] !== "/") {
+        pathName = `/${pathName}`;
+    }
+    return encodeURI(`file://${pathName}`);
 }
 //# sourceMappingURL=loader.js.map

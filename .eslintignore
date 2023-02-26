@@ -1,2 +1,5 @@
 /dist
 .eslintrc.cjs
+jest.config.ts
+/test.js
+/test-sheet-providers

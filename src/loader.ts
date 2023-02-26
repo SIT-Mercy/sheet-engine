@@ -61,27 +61,50 @@ export class XlsxDocumentParseError extends Error {
     this.name = "XlsxDocumentParseError"
   }
 }
+
+export async function loadSheetProvider(path: string): Promise<XlsxSheetLoaderPorvider | null> {
+  const module = await import(path)
+  const provider = module.default
+  if (provider.name && provider.type && provider.create) {
+    return provider
+  }
+  return null
+}
+
 /**
  * 
  * @param folder the folder where contains SheetLoaderProvider scripts
  * @returns name to provider
  */
-export async function loadSheetLoadersInDir(folder: string): Promise<XlsxSheetLoaderPorvider[]> {
+export async function loadSheetProviderInDir(folder: string, onError: ((e: any) => any) | null = null): Promise<XlsxSheetLoaderPorvider[]> {
   const readdir = promisify(fs.readdir)
   const files = await readdir(folder, { withFileTypes: true })
   const providers: XlsxSheetLoaderPorvider[] = []
   for (const file of files) {
     const fileName = file.name
     if (path.extname(fileName) === ".js") {
-      const fullPath = path.join(folder, fileName)
+      const fullPath = fileUrl(path.join(folder, fileName))
+      console.log(fullPath)
       try {
-        const provider = await import(fullPath)
-        if (provider.name && provider.type && provider.create) {
+        const provider = await loadSheetProvider(fullPath)
+        if (provider) {
           providers.push(provider)
         }
       } catch (e) {
+        onError?.(e)
       }
     }
   }
   return providers
+}
+
+function fileUrl(filePath: string): string {
+  let pathName: string = path.resolve(filePath).replace(/\\/g, "/")
+
+  // Windows drive letter must be prefixed with a slash
+  if (pathName[0] !== "/") {
+    pathName = `/${pathName}`
+  }
+
+  return encodeURI(`file://${pathName}`)
 }
