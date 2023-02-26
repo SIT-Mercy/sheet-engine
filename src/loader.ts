@@ -82,7 +82,8 @@ export async function loadSheetProviderInDir(folder: string, onError: ((e: any) 
   const providers: XlsxSheetLoaderPorvider[] = []
   for (const file of files) {
     const fileName = file.name
-    if (path.extname(fileName) === ".js") {
+    const ext = path.extname(fileName)
+    if (ext === ".js" || ext === ".mjs") {
       const fullPath = fileUrl(path.join(folder, fileName))
       console.log(fullPath)
       try {
