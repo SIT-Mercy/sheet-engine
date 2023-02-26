@@ -3,6 +3,28 @@ import { XlsxGridSheet, type XlsxSheet, type CellRange } from "./sheet.js"
 import * as fs from "fs"
 import path from "path"
 import { promisify } from "util"
+
+export class XlsxSheetLoaderEntry {
+  provider: XlsxSheetLoaderPorvider
+  filePath: string
+  constructor(provider: XlsxSheetLoaderPorvider, filePath: string) {
+    this.provider = provider
+    this.filePath = filePath
+  }
+
+  get name(): string {
+    return this.provider.name
+  }
+
+  get type(): string {
+    return this.provider.type
+  }
+
+  get pathUrl(): string {
+    return fileUrl(this.filePath)
+  }
+}
+
 export interface XlsxSheetLoaderPorvider {
   name: string
   type: string
@@ -76,20 +98,20 @@ export async function loadSheetProvider(path: string): Promise<XlsxSheetLoaderPo
  * @param folder the folder where contains SheetLoaderProvider scripts
  * @returns name to provider
  */
-export async function loadSheetProviderInDir(folder: string, onError: ((e: any) => any) | null = null): Promise<XlsxSheetLoaderPorvider[]> {
+export async function loadSheetProviderInDir(folder: string, onError: ((e: any) => any) | null = null): Promise<XlsxSheetLoaderEntry[]> {
   const readdir = promisify(fs.readdir)
   const files = await readdir(folder, { withFileTypes: true })
-  const providers: XlsxSheetLoaderPorvider[] = []
+  const providers: XlsxSheetLoaderEntry[] = []
   for (const file of files) {
     const fileName = file.name
     const ext = path.extname(fileName)
     if (ext === ".js" || ext === ".mjs") {
-      const fullPath = fileUrl(path.join(folder, fileName))
-      console.log(fullPath)
+      const filePath = path.join(folder, fileName)
+      const pathUrl = fileUrl(filePath)
       try {
-        const provider = await loadSheetProvider(fullPath)
+        const provider = await loadSheetProvider(pathUrl)
         if (provider) {
-          providers.push(provider)
+          providers.push(new XlsxSheetLoaderEntry(provider, filePath))
         }
       } catch (e) {
         onError?.(e)

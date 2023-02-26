@@ -4,7 +4,7 @@ export default {
 
   async create(context) {
     return {
-      async load() {
+      async load(sheet) {
         return 1
       }
     }

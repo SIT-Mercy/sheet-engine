@@ -3,6 +3,21 @@ import { XlsxGridSheet } from "./sheet.js";
 import * as fs from "fs";
 import path from "path";
 import { promisify } from "util";
+export class XlsxSheetLoaderEntry {
+    constructor(provider, filePath) {
+        this.provider = provider;
+        this.filePath = filePath;
+    }
+    get name() {
+        return this.provider.name;
+    }
+    get type() {
+        return this.provider.type;
+    }
+    get pathUrl() {
+        return fileUrl(this.filePath);
+    }
+}
 export function parseXlsxDocument(source) {
     const rawMeta = xlsx.parseMetadata(source);
     const rawDocument = xlsx.parse(source);
@@ -61,12 +76,12 @@ export async function loadSheetProviderInDir(folder, onError = null) {
         const fileName = file.name;
         const ext = path.extname(fileName);
         if (ext === ".js" || ext === ".mjs") {
-            const fullPath = fileUrl(path.join(folder, fileName));
-            console.log(fullPath);
+            const filePath = path.join(folder, fileName);
+            const pathUrl = fileUrl(filePath);
             try {
-                const provider = await loadSheetProvider(fullPath);
+                const provider = await loadSheetProvider(pathUrl);
                 if (provider) {
-                    providers.push(provider);
+                    providers.push(new XlsxSheetLoaderEntry(provider, filePath));
                 }
             }
             catch (e) {
