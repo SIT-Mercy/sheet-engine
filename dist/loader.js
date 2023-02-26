@@ -1,5 +1,5 @@
-import xlsx from 'node-xlsx';
-import { XlsxGridSheet } from './sheet.js';
+import xlsx from "node-xlsx";
+import { XlsxGridSheet } from "./sheet.js";
 export function parseXlsxDocument(source) {
     const rawMeta = xlsx.parseMetadata(source);
     const rawDocument = xlsx.parse(source);
@@ -18,14 +18,18 @@ export function parseXlsxDocument(source) {
 }
 function parseXlsxRangeInfo(rangeInfo) {
     return {
-        start: rangeInfo ? {
-            row: rangeInfo.s.r,
-            column: rangeInfo.s.c,
-        } : null,
-        end: rangeInfo ? {
-            row: rangeInfo.e.r,
-            column: rangeInfo.e.c,
-        } : null,
+        start: rangeInfo
+            ? {
+                row: rangeInfo.s.r,
+                column: rangeInfo.s.c,
+            }
+            : null,
+        end: rangeInfo
+            ? {
+                row: rangeInfo.e.r,
+                column: rangeInfo.e.c,
+            }
+            : null,
     };
 }
 export var XlsxDocumentErrorType;

@@ -1,5 +1,5 @@
-import xlsx from 'node-xlsx'
-import { XlsxGridSheet, XlsxSheet, CellRange } from './sheet.js'
+import xlsx from "node-xlsx"
+import { XlsxGridSheet, type XlsxSheet, type CellRange } from "./sheet.js"
 export interface XlsxSheetLoaderPorvider {
   name: string
   type: string
@@ -29,18 +29,22 @@ export function parseXlsxDocument(source: any): Map<string, XlsxSheet> {
 }
 
 function parseXlsxRangeInfo(rangeInfo: any): {
-  start: CellRange | null,
+  start: CellRange | null
   end: CellRange | null
 } {
   return {
-    start: rangeInfo ? {
-      row: rangeInfo.s.r,
-      column: rangeInfo.s.c,
-    } : null,
-    end: rangeInfo ? {
-      row: rangeInfo.e.r,
-      column: rangeInfo.e.c,
-    } : null,
+    start: rangeInfo
+      ? {
+        row: rangeInfo.s.r,
+        column: rangeInfo.s.c,
+      }
+      : null,
+    end: rangeInfo
+      ? {
+        row: rangeInfo.e.r,
+        column: rangeInfo.e.c,
+      }
+      : null,
   }
 }
 
@@ -49,9 +53,8 @@ export enum XlsxDocumentErrorType {
 }
 
 export class XlsxDocumentParseError extends Error {
-
   constructor(message: XlsxDocumentErrorType) {
-    super(message);
-    this.name = "XlsxDocumentParseError";
+    super(message)
+    this.name = "XlsxDocumentParseError"
   }
 }

@@ -24,7 +24,15 @@
   "homepage": "https://github.com/SIT-Mercy/sheet-engine#readme",
   "dependencies": {
     "node-xlsx": "^0.21.0",
-    "typescript": "^4.9.5",
     "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.53.0",
+    "eslint": "^8.35.0",
+    "eslint-config-standard-with-typescript": "^34.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-n": "^15.6.1",
+    "eslint-plugin-promise": "^6.1.1",
+    "typescript": "^4.9.5"
   }
 }

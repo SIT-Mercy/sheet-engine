@@ -51,12 +51,14 @@ export class XlsxGridSheet implements XlsxSheet {
     this.rowLength = grid.length
     this.columnLength = grid.length > 0 ? grid[0].length : 0
   }
+
   at(row: RowSymbol, column: ColumnSymbol): string | undefined {
     if (typeof column === "string") {
       column = parseColumnNameToIndex(column)
     }
     return this.grid[row - 1][column]
   }
+
   onRow(row: RowSymbol): string[] {
     return this.grid[row - 1]
   }
@@ -66,9 +68,9 @@ export class XlsxGridSheet implements XlsxSheet {
  * @returns the corresponding index
  */
 export function parseColumnNameToIndex(column: string): number {
-  var result = 0
-  for (var i = 0; i < column.length; i++) {
-    var charCode = column.charCodeAt(i) - 64
+  let result = 0
+  for (let i = 0; i < column.length; i++) {
+    const charCode = column.charCodeAt(i) - 64
     result = result * 26 + charCode
   }
   return result - 1

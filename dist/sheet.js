@@ -18,9 +18,9 @@ export class XlsxGridSheet {
     }
 }
 export function parseColumnNameToIndex(column) {
-    var result = 0;
-    for (var i = 0; i < column.length; i++) {
-        var charCode = column.charCodeAt(i) - 64;
+    let result = 0;
+    for (let i = 0; i < column.length; i++) {
+        const charCode = column.charCodeAt(i) - 64;
         result = result * 26 + charCode;
     }
     return result - 1;
