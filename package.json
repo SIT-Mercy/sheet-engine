@@ -27,6 +27,7 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@types/node": "^18.14.1",
     "@typescript-eslint/eslint-plugin": "^5.53.0",
     "eslint": "^8.35.0",
     "eslint-config-standard-with-typescript": "^34.0.0",

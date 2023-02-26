@@ -1,5 +1,8 @@
 import xlsx from "node-xlsx";
 import { XlsxGridSheet } from "./sheet.js";
+import * as fs from "fs";
+import path from "path";
+import { promisify } from "util";
 export function parseXlsxDocument(source) {
     const rawMeta = xlsx.parseMetadata(source);
     const rawDocument = xlsx.parse(source);
@@ -41,5 +44,25 @@ export class XlsxDocumentParseError extends Error {
         super(message);
         this.name = "XlsxDocumentParseError";
     }
+}
+export async function loadSheetLoadersInDir(folder) {
+    const readdir = promisify(fs.readdir);
+    const files = await readdir(folder, { withFileTypes: true });
+    const providers = [];
+    for (const file of files) {
+        const fileName = file.name;
+        if (path.extname(fileName) === ".js") {
+            const fullPath = path.join(folder, fileName);
+            try {
+                const provider = await import(fullPath);
+                if (provider.name && provider.type && provider.create) {
+                    providers.push(provider);
+                }
+            }
+            catch (e) {
+            }
+        }
+    }
+    return providers;
 }
 //# sourceMappingURL=loader.js.map

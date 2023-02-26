@@ -1,5 +1,8 @@
 import xlsx from "node-xlsx"
 import { XlsxGridSheet, type XlsxSheet, type CellRange } from "./sheet.js"
+import * as fs from "fs"
+import path from "path"
+import { promisify } from "util"
 export interface XlsxSheetLoaderPorvider {
   name: string
   type: string
@@ -57,4 +60,28 @@ export class XlsxDocumentParseError extends Error {
     super(message)
     this.name = "XlsxDocumentParseError"
   }
+}
+/**
+ * 
+ * @param folder the folder where contains SheetLoaderProvider scripts
+ * @returns name to provider
+ */
+export async function loadSheetLoadersInDir(folder: string): Promise<XlsxSheetLoaderPorvider[]> {
+  const readdir = promisify(fs.readdir)
+  const files = await readdir(folder, { withFileTypes: true })
+  const providers: XlsxSheetLoaderPorvider[] = []
+  for (const file of files) {
+    const fileName = file.name
+    if (path.extname(fileName) === ".js") {
+      const fullPath = path.join(folder, fileName)
+      try {
+        const provider = await import(fullPath)
+        if (provider.name && provider.type && provider.create) {
+          providers.push(provider)
+        }
+      } catch (e) {
+      }
+    }
+  }
+  return providers
 }
