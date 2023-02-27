@@ -63,7 +63,7 @@ export class XlsxDocumentParseError extends Error {
 export async function loadSheetProvider(path) {
     const module = await import(path);
     const provider = module.default;
-    if (provider.name && provider.type && provider.create) {
+    if ("name" in provider && "type" in provider && "create" in provider) {
         return provider;
     }
     return null;
