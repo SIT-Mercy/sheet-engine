@@ -99,6 +99,7 @@ export async function loadSheetProvider(path: string): Promise<XlsxSheetLoaderPo
  * @returns name to provider
  */
 export async function loadSheetProviderInDir(folder: string, onError: ((e: any) => any) | null = null): Promise<XlsxSheetLoaderEntry[]> {
+  if (!fs.existsSync(folder)) return []
   const readdir = promisify(fs.readdir)
   const files = await readdir(folder, { withFileTypes: true })
   const providers: XlsxSheetLoaderEntry[] = []
