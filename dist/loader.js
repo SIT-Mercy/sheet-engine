@@ -69,6 +69,8 @@ export async function loadSheetProvider(path) {
     return null;
 }
 export async function loadSheetProviderInDir(folder, onError = null) {
+    if (!fs.existsSync(folder))
+        return [];
     const readdir = promisify(fs.readdir);
     const files = await readdir(folder, { withFileTypes: true });
     const providers = [];
