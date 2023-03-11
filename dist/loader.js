@@ -3,21 +3,6 @@ import { XlsxGridSheet } from "./sheet.js";
 import * as fs from "fs";
 import path from "path";
 import { promisify } from "util";
-export class XlsxSheetLoaderEntry {
-    constructor(provider, filePath) {
-        this.provider = provider;
-        this.filePath = filePath;
-    }
-    get name() {
-        return this.provider.name;
-    }
-    get type() {
-        return this.provider.type;
-    }
-    get pathUrl() {
-        return fileUrl(this.filePath);
-    }
-}
 export function parseXlsxDocument(source) {
     const rawMeta = xlsx.parseMetadata(source);
     const rawDocument = xlsx.parse(source);
@@ -79,11 +64,12 @@ export async function loadSheetProviderInDir(folder, onError = null) {
         const ext = path.extname(fileName);
         if (ext === ".js" || ext === ".mjs") {
             const filePath = path.join(folder, fileName);
-            const pathUrl = fileUrl(filePath);
+            const pathUri = filePathToUri(filePath);
             try {
-                const provider = await loadSheetProvider(pathUrl);
+                const provider = await loadSheetProvider(pathUri);
                 if (provider) {
-                    providers.push(new XlsxSheetLoaderEntry(provider, filePath));
+                    providers.push(Object.assign(Object.assign({}, provider), { filePath,
+                        pathUri }));
                 }
             }
             catch (e) {
@@ -93,7 +79,7 @@ export async function loadSheetProviderInDir(folder, onError = null) {
     }
     return providers;
 }
-function fileUrl(filePath) {
+function filePathToUri(filePath) {
     let pathName = path.resolve(filePath).replace(/\\/g, "/");
     if (pathName[0] !== "/") {
         pathName = `/${pathName}`;

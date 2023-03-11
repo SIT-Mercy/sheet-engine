@@ -4,32 +4,15 @@ import * as fs from "fs"
 import path from "path"
 import { promisify } from "util"
 
-export class XlsxSheetLoaderEntry {
-  provider: XlsxSheetLoaderPorvider
-  filePath: string
-  constructor(provider: XlsxSheetLoaderPorvider, filePath: string) {
-    this.provider = provider
-    this.filePath = filePath
-  }
-
-  get name(): string {
-    return this.provider.name
-  }
-
-  get type(): string {
-    return this.provider.type
-  }
-
-  get pathUrl(): string {
-    return fileUrl(this.filePath)
-  }
-}
-
 export interface XlsxSheetLoaderPorvider {
   name: string
   type: string
+  description: string
+  filePath: string
+  pathUri: string
   create: (context: any) => XlsxSheetLoaderLoader
 }
+
 export interface XlsxSheetLoaderLoader {
   load: (sheet: XlsxSheet) => Promise<any>
 }
@@ -98,21 +81,25 @@ export async function loadSheetProvider(path: string): Promise<XlsxSheetLoaderPo
  * @param folder the folder where contains SheetLoaderProvider scripts
  * @returns name to provider
  */
-export async function loadSheetProviderInDir(folder: string, onError: ((e: any) => any) | null = null): Promise<XlsxSheetLoaderEntry[]> {
+export async function loadSheetProviderInDir(folder: string, onError: ((e: any) => any) | null = null): Promise<XlsxSheetLoaderPorvider[]> {
   if (!fs.existsSync(folder)) return []
   const readdir = promisify(fs.readdir)
   const files = await readdir(folder, { withFileTypes: true })
-  const providers: XlsxSheetLoaderEntry[] = []
+  const providers: XlsxSheetLoaderPorvider[] = []
   for (const file of files) {
     const fileName = file.name
     const ext = path.extname(fileName)
     if (ext === ".js" || ext === ".mjs") {
       const filePath = path.join(folder, fileName)
-      const pathUrl = fileUrl(filePath)
+      const pathUri = filePathToUri(filePath)
       try {
-        const provider = await loadSheetProvider(pathUrl)
+        const provider = await loadSheetProvider(pathUri)
         if (provider) {
-          providers.push(new XlsxSheetLoaderEntry(provider, filePath))
+          providers.push({
+            ...provider,
+            filePath,
+            pathUri,
+          })
         }
       } catch (e) {
         onError?.(e)
@@ -122,7 +109,7 @@ export async function loadSheetProviderInDir(folder: string, onError: ((e: any) 
   return providers
 }
 
-function fileUrl(filePath: string): string {
+function filePathToUri(filePath: string): string {
   let pathName: string = path.resolve(filePath).replace(/\\/g, "/")
 
   // Windows drive letter must be prefixed with a slash
